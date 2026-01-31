@@ -1,10 +1,5 @@
 <?php
 namespace App\Modules\Payments\Domain\Events;
-
-use App\Modules\Payments\Domain\Entities\Payment;
-
-final class PaymentConfirmed
-{
-    public Payment $payment;
-    public function __construct(Payment $payment) { $this->payment = $payment; }
+class PaymentConfirmed {
+    public function __construct(public readonly int $paymentId, public readonly int $donationId, public readonly float $amount, public readonly string $currency, public readonly string $paymentMethod) {}
 }

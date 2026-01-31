@@ -1,14 +1,5 @@
 <?php
 namespace App\Modules\Allocation\Domain\Events;
-
-use App\Modules\Allocation\Domain\Entities\Allocation;
-
-final class AllocationCreated
-{
-    public Allocation $allocation;
-
-    public function __construct(Allocation $allocation)
-    {
-        $this->allocation = $allocation;
-    }
+class AllocationCreated {
+    public function __construct(public readonly int $allocationId,public readonly int $donationId,public readonly int $projectId,public readonly float $amount) {}
 }

@@ -1,37 +1,20 @@
 <?php
-
 namespace App\Modules\Zakat\Application\Handlers;
-
 use App\Modules\Zakat\Application\Commands\CalculateZakatCommand;
+use App\Modules\Zakat\Models\Zakat;
 use App\Modules\Zakat\Domain\Events\ZakatCalculated;
-use App\Modules\Shared\Contracts\EventBus;
-use App\Modules\Shared\Phase\Phase;
-use App\Modules\Shared\Phase\PhaseGuard;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 
-final class CalculateZakatHandler
-{
-    public function __construct(
-        private EventBus $eventBus,
-        private PhaseGuard $phaseGuard
-    ) {}
-
-    public function handle(CalculateZakatCommand $command): void
-    {
-        $this->phaseGuard->ensureCompleted(Phase::FORECAST);
-
-        DB::table('zakat')->insert([
-            'id' => $command->zakat->id,
-            'ledger_entry_id' => $command->zakat->ledgerEntryId,
-            'amount' => $command->zakat->amount->amount,
-            'currency' => $command->zakat->amount->currency,
-            'event_id' => $command->zakat->id,
-            'created_at' => now(),
-            'updated_at' => now(),
+class CalculateZakatHandler{
+    public function handle(CalculateZakatCommand $command): Zakat{
+        $zakatAmount=round($command->amount*0.025,2);
+        $zakat=Zakat::create([
+            'reference_type'=>$command->referenceType,
+            'reference_id'=>$command->referenceId,
+            'amount'=>$zakatAmount,
+            'status'=>'calculated',
         ]);
-
-        $this->eventBus->publish(
-            new ZakatCalculated($command->zakat)
-        );
+        Event::dispatch(new ZakatCalculated($command->referenceType,$command->referenceId,$zakatAmount));
+        return $zakat;
     }
 }

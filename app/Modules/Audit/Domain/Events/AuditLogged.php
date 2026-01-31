@@ -1,15 +1,6 @@
 <?php
-
 namespace App\Modules\Audit\Domain\Events;
-
-use App\Modules\Shared\Events\DomainEvent;
-use App\Modules\Audit\Domain\Entities\AuditLog;
-
-final class AuditLogged extends DomainEvent
+class AuditLogged
 {
-    public function __construct(
-        public readonly AuditLog $auditLog
-    ) {
-        parent::__construct();
-    }
+    public function __construct(public readonly array $payload, public readonly ?string $userId, public readonly string $module, public readonly string $eventType) {}
 }
