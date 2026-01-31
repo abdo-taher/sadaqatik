@@ -6,7 +6,11 @@ use Illuminate\Support\Facades\Event;
 
 class AuditListener
 {
-    public function handle(object $event): void {
+//    public function handle(?object $event): void {
+    public function handle( $event): void {
+        if (!is_object($event)) {
+            return;
+        }
         $payload = json_decode(json_encode($event), true);
         $userId = auth()->check() ? auth()->id() : null;
         $module = explode('\\', get_class($event))[2] ?? 'Unknown';

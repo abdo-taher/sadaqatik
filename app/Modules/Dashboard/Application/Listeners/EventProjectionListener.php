@@ -8,7 +8,11 @@ use App\Modules\Dashboard\ReadModels\AuditorDashboard;
 use Illuminate\Support\Facades\Event;
 
 class EventProjectionListener{
-    public function handle(object $event): void{
+//    public function handle(object $event): void{
+    public function handle($event): void{
+        if (!is_object($event)) {
+            return;
+        }
         $eventClass=class_basename($event);
         $payload=json_decode(json_encode($event),true);
 
